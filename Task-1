@@ -1,0 +1,195 @@
+/* Create a database for managing a library's book inventory, members, and
+borrow/return transactions. This project helps you learn basic SQL commands
+and database design. Design tables for books, members, and transactions.
+Write SQL queries to insert, update, delete, and retrieve data. */
+
+
+show databases;
++--------------------+
+| Database           |
++--------------------+
+| devi               |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use devi;
+Database changed
+mysql> create table books(
+    -> book_id int primary key,
+    -> title varchar(200),
+    -> author varchar(200),
+    -> year int,
+    -> genre varchar(100),
+    -> available_copies int);
+Query OK, 0 rows affected (0.69 sec)
+
+mysql> show tables;
++----------------+
+| Tables_in_devi |
++----------------+
+| books          |
++----------------+
+1 row in set (0.00 sec)
+
+mysql> create table members(
+    -> member_id int primary key,
+    -> f_name varchar(200),
+    -> l_name varchar(200),
+    -> dob date,
+    -> address varchar(200),
+    -> phone_num varchar(20),
+    -> email varchar(100)
+    -> );
+Query OK, 0 rows affected (0.48 sec)
+
+mysql> create table transactions(
+    -> transaction_id int primary key,
+    -> book_id int,
+    -> member_id int,
+    -> borrow_date date,
+    -> return_date date,
+    -> foreign key (book_id) references books(book_id),
+    -> foreign key (member_id) references members(member_id)
+    -> );
+Query OK, 0 rows affected (0.74 sec)
+
+mysql> show tables;
++----------------+
+| Tables_in_devi |
++----------------+
+| books          |
+| members        |
+| transactions   |
++----------------+
+3 rows in set (0.00 sec)
+
+mysql> desc books;
++------------------+--------------+------+-----+---------+-------+
+| Field            | Type         | Null | Key | Default | Extra |
++------------------+--------------+------+-----+---------+-------+
+| book_id          | int          | NO   | PRI | NULL    |       |
+| title            | varchar(200) | YES  |     | NULL    |       |
+| author           | varchar(200) | YES  |     | NULL    |       |
+| year             | int          | YES  |     | NULL    |       |
+| genre            | varchar(100) | YES  |     | NULL    |       |
+| available_copies | int          | YES  |     | NULL    |       |
++------------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> desc members;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| member_id | int          | NO   | PRI | NULL    |       |
+| f_name    | varchar(200) | YES  |     | NULL    |       |
+| l_name    | varchar(200) | YES  |     | NULL    |       |
+| dob       | date         | YES  |     | NULL    |       |
+| address   | varchar(200) | YES  |     | NULL    |       |
+| phone_num | varchar(20)  | YES  |     | NULL    |       |
+| email     | varchar(100) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+mysql> desc transactions;
++----------------+------+------+-----+---------+-------+
+| Field          | Type | Null | Key | Default | Extra |
++----------------+------+------+-----+---------+-------+
+| transaction_id | int  | NO   | PRI | NULL    |       |
+| book_id        | int  | YES  | MUL | NULL    |       |
+| member_id      | int  | YES  | MUL | NULL    |       |
+| borrow_date    | date | YES  |     | NULL    |       |
+| return_date    | date | YES  |     | NULL    |       |
++----------------+------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> insert into books values (1,'The White Tiger','Aravind Adiga',2008,'Fiction',5),
+    -> (2,'The God Of Small Things','Arundhati Roy',1997,'Fiction',3),
+    -> (3,'Interpreter of Maladies','Jhumpa Lahiri',1999,'Short Stories',4);
+Query OK, 3 rows affected (0.09 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from books;
++---------+-------------------------+---------------+------+---------------+------------------+
+| book_id | title                   | author        | year | genre         | available_copies |
++---------+-------------------------+---------------+------+---------------+------------------+
+|       1 | The White Tiger         | Aravind Adiga | 2008 | Fiction       |                5 |
+|       2 | The God Of Small Things | Arundhati Roy | 1997 | Fiction       |                3 |
+|       3 | Interpreter of Maladies | Jhumpa Lahiri | 1999 | Short Stories |                4 |
++---------+-------------------------+---------------+------+---------------+------------------+
+3 rows in set (0.00 sec)
+insert into members values (1,'Chirag','Shetty','1997-07-04','123 main st Mumbai','9876543211','chiragshetty@gmail.com'),
+    -> (2,'Satwiksairaj','Rankireddy','2000-08-13','234 main st Amalapuram','1234567889','satwiksairaj@gmail.com');
+Query OK, 2 rows affected (0.10 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> insert into transactions values (1,1,1,'2025-07-01',null),
+    -> (2,2,2,'2024-07-02',null);
+Query OK, 2 rows affected (0.06 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from members;
++-----------+--------------+------------+------------+------------------------+------------+------------------------+
+| member_id | f_name       | l_name     | dob        | address                | phone_num  | email                  |
++-----------+--------------+------------+------------+------------------------+------------+------------------------+
+|         1 | Chirag       | Shetty     | 1997-07-04 | 123 main st Mumbai     | 9876543211 | chiragshetty@gmail.com |
+|         2 | Satwiksairaj | Rankireddy | 2000-08-13 | 234 main st Amalapuram | 1234567889 | satwiksairaj@gmail.com |
++-----------+--------------+------------+------------+------------------------+------------+------------------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from books;
++---------+-------------------------+---------------+------+---------------+------------------+
+| book_id | title                   | author        | year | genre         | available_copies |
++---------+-------------------------+---------------+------+---------------+------------------+
+|       1 | The White Tiger         | Aravind Adiga | 2008 | Fiction       |                5 |
+|       2 | The God Of Small Things | Arundhati Roy | 1997 | Fiction       |                3 |
+|       3 | Interpreter of Maladies | Jhumpa Lahiri | 1999 | Short Stories |                4 |
++---------+-------------------------+---------------+------+---------------+------------------+
+3 rows in set (0.00 sec)
+
+mysql> update books set available_copies = available_copies - 1 where book_id = 1;
+Query OK, 1 row affected (0.13 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from books;
++---------+-------------------------+---------------+------+---------------+------------------+
+| book_id | title                   | author        | year | genre         | available_copies |
++---------+-------------------------+---------------+------+---------------+------------------+
+|       1 | The White Tiger         | Aravind Adiga | 2008 | Fiction       |                4 |
+|       2 | The God Of Small Things | Arundhati Roy | 1997 | Fiction       |                3 |
+|       3 | Interpreter of Maladies | Jhumpa Lahiri | 1999 | Short Stories |                4 |
++---------+-------------------------+---------------+------+---------------+------------------+
+3 rows in set (0.00 sec)
+
+mysql> delete from books where book_id = 3;
+Query OK, 1 row affected (0.09 sec)
+
+mysql> select * from books;
++---------+-------------------------+---------------+------+---------+------------------+
+| book_id | title                   | author        | year | genre   | available_copies |
++---------+-------------------------+---------------+------+---------+------------------+
+|       1 | The White Tiger         | Aravind Adiga | 2008 | Fiction |                4 |
+|       2 | The God Of Small Things | Arundhati Roy | 1997 | Fiction |                3 |
++---------+-------------------------+---------------+------+---------+------------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from members;
++-----------+--------------+------------+------------+------------------------+------------+------------------------+
+| member_id | f_name       | l_name     | dob        | address                | phone_num  | email                  |
++-----------+--------------+------------+------------+------------------------+------------+------------------------+
+|         1 | Chirag       | Shetty     | 1997-07-04 | 123 main st Mumbai     | 9876543211 | chiragshetty@gmail.com |
+|         2 | Satwiksairaj | Rankireddy | 2000-08-13 | 234 main st Amalapuram | 1234567889 | satwiksairaj@gmail.com |
++-----------+--------------+------------+------------+------------------------+------------+------------------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from transactions;
++----------------+---------+-----------+-------------+-------------+
+| transaction_id | book_id | member_id | borrow_date | return_date |
++----------------+---------+-----------+-------------+-------------+
+|              1 |       1 |         1 | 2025-07-01  | NULL        |
+|              2 |       2 |         2 | 2024-07-02  | NULL        |
++----------------+---------+-----------+-------------+-------------+
+2 rows in set (0.00 sec)
